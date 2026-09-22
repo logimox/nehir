@@ -153,6 +153,7 @@ struct CanonicalTOMLConfig: Codable, Equatable {
         var windowLevel: String
         var position: String
         var textOrientation: String
+        var floatingWindowsIndicatorStyle: String
         var notchAware: Bool
         var deduplicateAppIcons: Bool
         var hideEmptyWorkspaces: Bool
@@ -170,6 +171,7 @@ struct CanonicalTOMLConfig: Codable, Equatable {
         enum CodingKeys: String, CodingKey, CaseIterable {
             case enabled, showLabels, showFloatingWindows, showTraceButton, showScrollLockButton, windowLevel, position,
                  textOrientation,
+                 floatingWindowsIndicatorStyle,
                  notchAware,
                  deduplicateAppIcons, hideEmptyWorkspaces, showWorkspacesFromOtherDisplays, reserveLayoutSpace, height,
                  backgroundOpacity, xOffset,
@@ -328,6 +330,7 @@ extension CanonicalTOMLConfig {
             windowLevel: export.workspaceBarWindowLevel,
             position: export.workspaceBarPosition,
             textOrientation: export.workspaceBarTextOrientation,
+            floatingWindowsIndicatorStyle: export.workspaceBarFloatingWindowsIndicatorStyle,
             notchAware: export.workspaceBarNotchAware,
             deduplicateAppIcons: export.workspaceBarDeduplicateAppIcons,
             hideEmptyWorkspaces: export.workspaceBarHideEmptyWorkspaces,
@@ -424,6 +427,7 @@ extension CanonicalTOMLConfig {
             workspaceBarWindowLevel: workspaceBar.windowLevel,
             workspaceBarPosition: workspaceBar.position,
             workspaceBarTextOrientation: workspaceBar.textOrientation,
+            workspaceBarFloatingWindowsIndicatorStyle: workspaceBar.floatingWindowsIndicatorStyle,
             workspaceBarNotchAware: workspaceBar.notchAware,
             workspaceBarDeduplicateAppIcons: workspaceBar.deduplicateAppIcons,
             workspaceBarHideEmptyWorkspaces: workspaceBar.hideEmptyWorkspaces,
@@ -778,6 +782,11 @@ extension CanonicalTOMLConfig.WorkspaceBar {
             forKey: .textOrientation,
             default: d.textOrientation
         )
+        floatingWindowsIndicatorStyle = try container.decodeWithDefault(
+            String.self,
+            forKey: .floatingWindowsIndicatorStyle,
+            default: d.floatingWindowsIndicatorStyle
+        )
         notchAware = try container.decodeWithDefault(Bool.self, forKey: .notchAware, default: d.notchAware)
         deduplicateAppIcons = try container.decodeWithDefault(
             Bool.self,
@@ -823,6 +832,7 @@ extension CanonicalTOMLConfig.WorkspaceBar {
         try container.encode(windowLevel, forKey: "windowLevel")
         try container.encode(position, forKey: "position")
         try container.encode(textOrientation, forKey: "textOrientation")
+        try container.encode(floatingWindowsIndicatorStyle, forKey: "floatingWindowsIndicatorStyle")
         try container.encode(notchAware, forKey: "notchAware")
         try container.encode(deduplicateAppIcons, forKey: "deduplicateAppIcons")
         try container.encode(hideEmptyWorkspaces, forKey: "hideEmptyWorkspaces")

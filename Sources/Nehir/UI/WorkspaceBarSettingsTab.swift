@@ -506,6 +506,15 @@ private struct GlobalBarSettingsSection: View {
             }
 
             Section("Appearance") {
+                Picker("Floating Window Indicator", selection: $settings.workspaceBarFloatingWindowsIndicatorStyle) {
+                    ForEach(FloatingWindowsIndicatorStyle.allCases) { style in
+                        Text(style.displayName).tag(style)
+                    }
+                }
+                .onChange(of: settings.workspaceBarFloatingWindowsIndicatorStyle) { _, _ in
+                    controller.updateWorkspaceBarSettings()
+                }
+
                 SettingsSliderRow(
                     label: "Bar Height",
                     value: $settings.workspaceBarHeight,

@@ -126,6 +126,7 @@ struct WorkspaceBarSnapshot: Equatable {
     let barHeight: CGFloat
     let position: WorkspaceBarPosition
     let textOrientation: WorkspaceBarTextOrientation
+    let floatingWindowsIndicatorStyle: FloatingWindowsIndicatorStyle
     let hasDisplayDiagnosticsWarning: Bool
     let showScrollLockButton: Bool
     let accentColor: SettingsColor?
@@ -397,6 +398,7 @@ private struct WorkspaceBarContentView: View {
                     textOrientation: snapshot.textOrientation,
                     accentColor: accentColor,
                     textColor: textColor,
+                    floatingWindowsIndicatorStyle: snapshot.floatingWindowsIndicatorStyle,
                     onFocusWorkspace: { onFocusWorkspace(item) },
                     onMoveFocusedWindowToWorkspace: { onMoveFocusedWindowToWorkspace(item) },
                     onFocusWindow: onFocusWindow,
@@ -531,6 +533,7 @@ private struct WorkspaceItemView: View {
     let textOrientation: WorkspaceBarTextOrientation
     let accentColor: Color?
     let textColor: Color?
+    let floatingWindowsIndicatorStyle: FloatingWindowsIndicatorStyle
     let onFocusWorkspace: () -> Void
     let onMoveFocusedWindowToWorkspace: () -> Void
     let onFocusWindow: (WindowToken) -> Void
@@ -625,6 +628,7 @@ private struct WorkspaceItemView: View {
                     animationsEnabled: animationsEnabled,
                     accentColor: accentColor,
                     textColor: textColor,
+                    indicatorStyle: floatingWindowsIndicatorStyle,
                     onFocusWindow: onFocusWindow,
                     actions: scopedWindowActions
                 )
@@ -875,6 +879,7 @@ private struct FloatingWindowsGroupView: View {
     let animationsEnabled: Bool
     let accentColor: Color?
     let textColor: Color?
+    let indicatorStyle: FloatingWindowsIndicatorStyle
     let onFocusWindow: (WindowToken) -> Void
     let actions: WorkspaceBarWindowActions
 
@@ -883,26 +888,17 @@ private struct FloatingWindowsGroupView: View {
     }
 
     var body: some View {
-        HStack(spacing: 3) {
-            Image(systemName: "rectangle.on.rectangle")
-                .font(.system(size: max(10, iconSize * 0.58), weight: .medium))
-                .foregroundStyle(resolvedSecondaryTextColor)
-                .accessibilityHidden(true)
-
-            ForEach(windows, id: \.id) { window in
-                WindowIconView(
-                    window: window,
-                    iconSize: iconSize,
-                    isFocused: window.isFocused,
-                    isSelected: window.isSelected,
-                    isInFocusedWorkspace: isInFocusedWorkspace,
-                    context: .floating,
-                    animationsEnabled: animationsEnabled,
-                    accentColor: accentColor,
-                    textColor: textColor,
-                    onFocusWindow: onFocusWindow,
-                    actions: actions
-                )
+        VStack(spacing: 3) {
+            HStack(spacing: 3) {
+                ForEach(windows, id: \.id) { window in
+                    floatingWindowIcon(window)
+                }
+            }
+            if indicatorStyle == .icon {
+                Image(systemName: "rectangle.on.rectangle")
+                    .font(.system(size: max(10, iconSize * 0.58), weight: .medium))
+                    .foregroundStyle(resolvedSecondaryTextColor)
+                    .accessibilityHidden(true)
             }
         }
         .padding(.horizontal, 5)
@@ -917,6 +913,30 @@ private struct FloatingWindowsGroupView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Floating windows")
+    }
+
+    @ViewBuilder
+    private func floatingWindowIcon(_ window: WorkspaceBarWindowItem) -> some View {
+        WindowIconView(
+            window: window,
+            iconSize: iconSize,
+            isFocused: window.isFocused,
+            isSelected: window.isSelected,
+            isInFocusedWorkspace: isInFocusedWorkspace,
+            context: .floating,
+            animationsEnabled: animationsEnabled,
+            accentColor: accentColor,
+            textColor: textColor,
+            onFocusWindow: onFocusWindow,
+            actions: actions
+        )
+        .overlay {
+            if indicatorStyle == .border {
+                RoundedRectangle(cornerRadius: 3)
+                    .strokeBorder(accentColor ?? .accentColor, lineWidth: 1)
+                    .padding(2)
+            }
+        }
     }
 }
 

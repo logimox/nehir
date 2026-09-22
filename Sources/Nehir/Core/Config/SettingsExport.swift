@@ -57,6 +57,7 @@ struct SettingsExport: Equatable, Sendable {
     var workspaceBarWindowLevel: String
     var workspaceBarPosition: String
     var workspaceBarTextOrientation: String
+    var workspaceBarFloatingWindowsIndicatorStyle: String
     var workspaceBarNotchAware: Bool
     var workspaceBarDeduplicateAppIcons: Bool
     var workspaceBarHideEmptyWorkspaces: Bool
@@ -164,6 +165,7 @@ extension SettingsExport {
             workspaceBarWindowLevel: WorkspaceBarWindowLevel.popup.rawValue,
             workspaceBarPosition: WorkspaceBarPosition.overlappingMenuBar.rawValue,
             workspaceBarTextOrientation: WorkspaceBarTextOrientation.horizontal.rawValue,
+            workspaceBarFloatingWindowsIndicatorStyle: FloatingWindowsIndicatorStyle.icon.rawValue,
             workspaceBarNotchAware: true,
             workspaceBarDeduplicateAppIcons: false,
             workspaceBarHideEmptyWorkspaces: false,

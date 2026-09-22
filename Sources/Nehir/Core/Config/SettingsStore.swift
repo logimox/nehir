@@ -202,6 +202,12 @@ final class SettingsStore {
         didSet { scheduleSave() }
     }
 
+    var workspaceBarFloatingWindowsIndicatorStyle = FloatingWindowsIndicatorStyle(
+        rawValue: SettingsStore.defaultExport.workspaceBarFloatingWindowsIndicatorStyle
+    ) ?? .icon {
+        didSet { scheduleSave() }
+    }
+
     var workspaceBarNotchAware = SettingsStore.defaultExport.workspaceBarNotchAware {
         didSet { scheduleSave() }
     }
@@ -498,6 +504,7 @@ final class SettingsStore {
             workspaceBarWindowLevel: workspaceBarWindowLevel.rawValue,
             workspaceBarPosition: workspaceBarPosition.rawValue,
             workspaceBarTextOrientation: workspaceBarTextOrientation.rawValue,
+            workspaceBarFloatingWindowsIndicatorStyle: workspaceBarFloatingWindowsIndicatorStyle.rawValue,
             workspaceBarNotchAware: workspaceBarNotchAware,
             workspaceBarDeduplicateAppIcons: workspaceBarDeduplicateAppIcons,
             workspaceBarHideEmptyWorkspaces: workspaceBarHideEmptyWorkspaces,
@@ -594,6 +601,9 @@ final class SettingsStore {
         workspaceBarWindowLevel = WorkspaceBarWindowLevel(rawValue: export.workspaceBarWindowLevel) ?? .popup
         workspaceBarPosition = WorkspaceBarPosition(rawValue: export.workspaceBarPosition) ?? .overlappingMenuBar
         workspaceBarTextOrientation = WorkspaceBarTextOrientation(rawValue: export.workspaceBarTextOrientation) ?? .horizontal
+        workspaceBarFloatingWindowsIndicatorStyle = FloatingWindowsIndicatorStyle(
+            rawValue: export.workspaceBarFloatingWindowsIndicatorStyle
+        ) ?? .icon
         workspaceBarNotchAware = export.workspaceBarNotchAware
         workspaceBarDeduplicateAppIcons = export.workspaceBarDeduplicateAppIcons
         workspaceBarHideEmptyWorkspaces = export.workspaceBarHideEmptyWorkspaces

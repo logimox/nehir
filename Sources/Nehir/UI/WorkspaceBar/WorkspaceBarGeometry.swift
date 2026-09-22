@@ -54,7 +54,9 @@ struct WorkspaceBarGeometry: Equatable {
             var x = effectivePosition == .leftEdge
                 ? monitor.visibleFrame.minX
                 : monitor.visibleFrame.maxX - width
-            var y = monitor.frame.midY - fittingSize.height / 2
+            // Side bars are anchored to the physical top edge so newly visible
+            // workspace content grows downward instead of shifting upward.
+            var y = monitor.frame.maxY - fittingSize.height
             x += CGFloat(resolved.xOffset)
             y += CGFloat(resolved.yOffset)
             return CGRect(x: x, y: y, width: width, height: fittingSize.height)

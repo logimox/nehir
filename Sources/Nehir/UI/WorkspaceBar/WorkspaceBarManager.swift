@@ -74,6 +74,20 @@ enum WorkspaceBarTextOrientation: String, CaseIterable, Identifiable {
     }
 }
 
+enum FloatingWindowsIndicatorStyle: String, CaseIterable, Identifiable {
+    case icon
+    case border
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .icon: "Icon Below"
+        case .border: "Icon Border"
+        }
+    }
+}
+
 @MainActor
 final class WorkspaceBarManager {
     private static let debugLogger = Logger(subsystem: "com.nehir", category: "workspace-bar")
@@ -428,6 +442,7 @@ final class WorkspaceBarManager {
             barHeight: current.barHeight,
             position: current.position,
             textOrientation: current.textOrientation,
+            floatingWindowsIndicatorStyle: current.floatingWindowsIndicatorStyle,
             hasDisplayDiagnosticsWarning: current.hasDisplayDiagnosticsWarning,
             showScrollLockButton: resolved.showScrollLockButton,
             accentColor: resolved.accentColor,
@@ -519,6 +534,7 @@ final class WorkspaceBarManager {
             barHeight: geometry.barHeight,
             position: geometry.effectivePosition,
             textOrientation: settings?.workspaceBarTextOrientation ?? .horizontal,
+            floatingWindowsIndicatorStyle: settings?.workspaceBarFloatingWindowsIndicatorStyle ?? .icon,
             hasDisplayDiagnosticsWarning: DisplayEnvironmentDiagnostics.evaluate(monitors: monitorProvider())
                 .hasBadgeWarnings,
             showScrollLockButton: resolved.showScrollLockButton,
