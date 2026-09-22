@@ -974,11 +974,12 @@ final class WMController {
     func insetWorkingFrame(for monitor: Monitor) -> CGRect {
         let scale = NSScreen.screens.first(where: { $0.displayId == monitor.displayId })?.backingScaleFactor ?? 2.0
         let resolved = settings.resolvedBarSettings(for: monitor)
-        var reservedTopInset = WorkspaceBarGeometry.resolve(
+        let geometry = WorkspaceBarGeometry.resolve(
             monitor: monitor,
             resolved: resolved,
             isVisible: isWorkspaceBarVisible(on: monitor, resolved: resolved)
-        ).reservedTopInset
+        )
+        var reservedTopInset = geometry.reservedTopInset
         // Keep managed windows out of the auto-hidden menu bar's reveal region
         // so they stay aligned with the (re-anchored) workspace bar. No-op when
         // the menu bar inset is already in `visibleFrame` (visible menu bar / notch).
@@ -989,6 +990,8 @@ final class WMController {
             from: monitor.visibleFrame,
             scale: scale,
             reservedTopInset: reservedTopInset,
+            reservedLeftInset: geometry.reservedLeftInset,
+            reservedRightInset: geometry.reservedRightInset,
             outerGaps: outerGaps(for: monitor)
         )
     }
@@ -997,12 +1000,14 @@ final class WMController {
         from frame: CGRect,
         scale: CGFloat = 2.0,
         reservedTopInset: CGFloat = 0,
+        reservedLeftInset: CGFloat = 0,
+        reservedRightInset: CGFloat = 0,
         outerGaps: LayoutGaps.OuterGaps? = nil
     ) -> CGRect {
         let outer = outerGaps ?? workspaceManager.outerGaps
         let struts = Struts(
-            left: outer.left,
-            right: outer.right,
+            left: outer.left + reservedLeftInset,
+            right: outer.right + reservedRightInset,
             top: outer.top + reservedTopInset,
             bottom: outer.bottom
         )

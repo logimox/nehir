@@ -446,6 +446,15 @@ private struct GlobalBarSettingsSection: View {
                     controller.updateWorkspaceBarSettings()
                 }
 
+                Picker("Label Orientation", selection: $settings.workspaceBarTextOrientation) {
+                    ForEach(WorkspaceBarTextOrientation.allCases) { orientation in
+                        Text(orientation.displayName).tag(orientation)
+                    }
+                }
+                .onChange(of: settings.workspaceBarTextOrientation) { _, _ in
+                    controller.updateWorkspaceBarSettings()
+                }
+
                 Picker("Window Level", selection: $settings.workspaceBarWindowLevel) {
                     ForEach(WorkspaceBarWindowLevel.allCases) { level in
                         Text(level.displayName).tag(level)
@@ -459,14 +468,14 @@ private struct GlobalBarSettingsSection: View {
                     .onChange(of: settings.workspaceBarNotchAware) { _, _ in
                         controller.updateWorkspaceBarSettings()
                     }
-                SettingsCaption("Offsets the bar to avoid the display notch on MacBook Pro.")
+                SettingsCaption("Keeps a top bar below the display notch on MacBook Pro.")
 
                 Toggle("Reserve Space for Workspace Bar", isOn: $settings.workspaceBarReserveLayoutSpace)
                     .onChange(of: settings.workspaceBarReserveLayoutSpace) { _, _ in
                         controller.updateWorkspaceBarSettings()
                     }
                 SettingsCaption(
-                    "Prevents tiled windows from appearing behind the bar. For finer control, adjust the top margin in Layout settings."
+                    "Prevents tiled windows from appearing behind the bar. For finer control, adjust layout margins."
                 )
             }
 
@@ -474,7 +483,7 @@ private struct GlobalBarSettingsSection: View {
                 SettingsNumberStepperRow(
                     label: "X Offset",
                     value: $settings.workspaceBarXOffset,
-                    range: -500 ... 500,
+                    range: -1_500 ... 1_500,
                     step: 10,
                     valueText: "\(Int(settings.workspaceBarXOffset)) px"
                 )
@@ -486,7 +495,7 @@ private struct GlobalBarSettingsSection: View {
                 SettingsNumberStepperRow(
                     label: "Y Offset",
                     value: $settings.workspaceBarYOffset,
-                    range: -500 ... 500,
+                    range: -1_500 ... 1_500,
                     step: 10,
                     valueText: "\(Int(settings.workspaceBarYOffset)) px"
                 )
@@ -821,7 +830,7 @@ private struct MonitorBarSettingsSection: View {
                 label: "X Offset",
                 value: ms.xOffset,
                 globalValue: settings.workspaceBarXOffset,
-                range: -500 ... 500,
+                range: -1_500 ... 1_500,
                 step: 10,
                 formatter: { "\(Int($0)) px" },
                 onChange: { newValue in updateSetting { $0.xOffset = newValue } },
@@ -833,7 +842,7 @@ private struct MonitorBarSettingsSection: View {
                 label: "Y Offset",
                 value: ms.yOffset,
                 globalValue: settings.workspaceBarYOffset,
-                range: -500 ... 500,
+                range: -1_500 ... 1_500,
                 step: 10,
                 formatter: { "\(Int($0)) px" },
                 onChange: { newValue in updateSetting { $0.yOffset = newValue } },

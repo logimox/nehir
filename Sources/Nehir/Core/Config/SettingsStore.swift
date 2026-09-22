@@ -196,6 +196,12 @@ final class SettingsStore {
         didSet { scheduleSave() }
     }
 
+    var workspaceBarTextOrientation = WorkspaceBarTextOrientation(
+        rawValue: SettingsStore.defaultExport.workspaceBarTextOrientation
+    ) ?? .horizontal {
+        didSet { scheduleSave() }
+    }
+
     var workspaceBarNotchAware = SettingsStore.defaultExport.workspaceBarNotchAware {
         didSet { scheduleSave() }
     }
@@ -491,6 +497,7 @@ final class SettingsStore {
             workspaceBarShowScrollLockButton: workspaceBarShowScrollLockButton,
             workspaceBarWindowLevel: workspaceBarWindowLevel.rawValue,
             workspaceBarPosition: workspaceBarPosition.rawValue,
+            workspaceBarTextOrientation: workspaceBarTextOrientation.rawValue,
             workspaceBarNotchAware: workspaceBarNotchAware,
             workspaceBarDeduplicateAppIcons: workspaceBarDeduplicateAppIcons,
             workspaceBarHideEmptyWorkspaces: workspaceBarHideEmptyWorkspaces,
@@ -586,6 +593,7 @@ final class SettingsStore {
         workspaceBarShowScrollLockButton = export.workspaceBarShowScrollLockButton
         workspaceBarWindowLevel = WorkspaceBarWindowLevel(rawValue: export.workspaceBarWindowLevel) ?? .popup
         workspaceBarPosition = WorkspaceBarPosition(rawValue: export.workspaceBarPosition) ?? .overlappingMenuBar
+        workspaceBarTextOrientation = WorkspaceBarTextOrientation(rawValue: export.workspaceBarTextOrientation) ?? .horizontal
         workspaceBarNotchAware = export.workspaceBarNotchAware
         workspaceBarDeduplicateAppIcons = export.workspaceBarDeduplicateAppIcons
         workspaceBarHideEmptyWorkspaces = export.workspaceBarHideEmptyWorkspaces

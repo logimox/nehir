@@ -56,6 +56,7 @@ struct SettingsExport: Equatable, Sendable {
     var workspaceBarShowScrollLockButton: Bool
     var workspaceBarWindowLevel: String
     var workspaceBarPosition: String
+    var workspaceBarTextOrientation: String
     var workspaceBarNotchAware: Bool
     var workspaceBarDeduplicateAppIcons: Bool
     var workspaceBarHideEmptyWorkspaces: Bool
@@ -162,6 +163,7 @@ extension SettingsExport {
             workspaceBarShowScrollLockButton: false,
             workspaceBarWindowLevel: WorkspaceBarWindowLevel.popup.rawValue,
             workspaceBarPosition: WorkspaceBarPosition.overlappingMenuBar.rawValue,
+            workspaceBarTextOrientation: WorkspaceBarTextOrientation.horizontal.rawValue,
             workspaceBarNotchAware: true,
             workspaceBarDeduplicateAppIcons: false,
             workspaceBarHideEmptyWorkspaces: false,

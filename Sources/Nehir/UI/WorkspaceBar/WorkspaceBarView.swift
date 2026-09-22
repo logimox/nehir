@@ -124,6 +124,8 @@ struct WorkspaceBarSnapshot: Equatable {
     let showLabels: Bool
     let backgroundOpacity: Double
     let barHeight: CGFloat
+    let position: WorkspaceBarPosition
+    let textOrientation: WorkspaceBarTextOrientation
     let hasDisplayDiagnosticsWarning: Bool
     let showScrollLockButton: Bool
     let accentColor: SettingsColor?
@@ -221,7 +223,10 @@ struct WorkspaceBarMeasurementView: View {
             onMoveWindowToWorkspace: { _, _ in },
             onToggleScratchpadVisible: {}
         )
-        .fixedSize(horizontal: true, vertical: false)
+        .fixedSize(
+            horizontal: snapshot.position != .rightEdge,
+            vertical: snapshot.position == .rightEdge
+        )
     }
 }
 
@@ -359,6 +364,10 @@ private struct WorkspaceBarContentView: View {
         snapshot.scratchpad != nil
     }
 
+    private var isVertical: Bool {
+        snapshot.position == .leftEdge || snapshot.position == .rightEdge
+    }
+
     private var windowActions: WorkspaceBarWindowActions {
         WorkspaceBarWindowActions(
             onToggleFloating: onToggleWindowFloating,
@@ -374,7 +383,7 @@ private struct WorkspaceBarContentView: View {
     }
 
     var body: some View {
-        HStack(spacing: workspaceSpacing) {
+        layout(spacing: workspaceSpacing) {
             ForEach(localItems, id: \.id) { item in
                 WorkspaceItemView(
                     item: item,
@@ -384,6 +393,8 @@ private struct WorkspaceBarContentView: View {
                     cornerRadius: cornerRadius,
                     animationsEnabled: effectiveAnimationsEnabled,
                     showLabels: snapshot.showLabels,
+                    isVertical: isVertical,
+                    textOrientation: snapshot.textOrientation,
                     accentColor: accentColor,
                     textColor: textColor,
                     onFocusWorkspace: { onFocusWorkspace(item) },
@@ -395,7 +406,10 @@ private struct WorkspaceBarContentView: View {
 
             if !foreignItemGroups.isEmpty {
                 Divider()
-                    .frame(height: itemHeight)
+                    .frame(
+                        width: isVertical ? itemHeight : nil,
+                        height: isVertical ? nil : itemHeight
+                    )
                     .opacity(0.4)
                     .accessibilityHidden(true)
 
@@ -468,8 +482,11 @@ private struct WorkspaceBarContentView: View {
                 onOpenCommandPalette: onOpenCommandPalette
             )
         }
-        .padding(.horizontal, 4)
-        .frame(height: itemHeight + 4)
+        .padding(isVertical ? .vertical : .horizontal, 4)
+        .frame(
+            width: isVertical ? itemHeight + 4 : nil,
+            height: isVertical ? nil : itemHeight + 4
+        )
         .background {
             if accessibilityReduceTransparency {
                 barShape.fill(Color(NSColor.windowBackgroundColor).opacity(0.96))
@@ -487,6 +504,18 @@ private struct WorkspaceBarContentView: View {
             )
         }
     }
+
+    @ViewBuilder
+    private func layout<Content: View>(
+        spacing: CGFloat,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        if isVertical {
+            VStack(spacing: spacing, content: content)
+        } else {
+            HStack(spacing: spacing, content: content)
+        }
+    }
 }
 
 @MainActor
@@ -498,6 +527,8 @@ private struct WorkspaceItemView: View {
     let cornerRadius: CGFloat
     let animationsEnabled: Bool
     let showLabels: Bool
+    let isVertical: Bool
+    let textOrientation: WorkspaceBarTextOrientation
     let accentColor: Color?
     let textColor: Color?
     let onFocusWorkspace: () -> Void
@@ -528,20 +559,24 @@ private struct WorkspaceItemView: View {
     }
 
     var body: some View {
-        HStack(spacing: windowSpacing) {
+        itemLayout(spacing: windowSpacing) {
             if showLabels {
                 WorkspaceLabelButton(
                     item: item,
                     accentColor: accentColor,
                     textColor: textColor,
+                    textOrientation: textOrientation,
                     onFocusWorkspace: onFocusWorkspace,
                     onMoveFocusedWindowToWorkspace: onMoveFocusedWindowToWorkspace
                 )
 
                 if !item.windows.isEmpty {
                     Divider()
-                        .frame(height: iconSize)
-                        .padding(.horizontal, 2)
+                        .frame(
+                            width: isVertical ? iconSize : nil,
+                            height: isVertical ? nil : iconSize
+                        )
+                        .padding(isVertical ? .vertical : .horizontal, 2)
                         .accessibilityHidden(true)
                 }
             } else if item.windows.isEmpty {
@@ -549,6 +584,7 @@ private struct WorkspaceItemView: View {
                     item: item,
                     accentColor: accentColor,
                     textColor: textColor,
+                    textOrientation: textOrientation,
                     onFocusWorkspace: onFocusWorkspace,
                     onMoveFocusedWindowToWorkspace: onMoveFocusedWindowToWorkspace
                 )
@@ -572,8 +608,11 @@ private struct WorkspaceItemView: View {
 
             if !item.tiledWindows.isEmpty && !item.floatingWindows.isEmpty {
                 Divider()
-                    .frame(height: iconSize)
-                    .padding(.horizontal, 2)
+                    .frame(
+                        width: isVertical ? iconSize : nil,
+                        height: isVertical ? nil : iconSize
+                    )
+                    .padding(isVertical ? .vertical : .horizontal, 2)
                     .accessibilityHidden(true)
             }
 
@@ -591,9 +630,12 @@ private struct WorkspaceItemView: View {
                 )
             }
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 2)
-        .frame(height: itemHeight)
+        .padding(isVertical ? .vertical : .horizontal, 8)
+        .padding(isVertical ? .horizontal : .vertical, 2)
+        .frame(
+            width: isVertical ? itemHeight : nil,
+            height: isVertical ? nil : itemHeight
+        )
         .background {
             if item.isFocused || isHovered {
                 RoundedRectangle(cornerRadius: cornerRadius)
@@ -629,6 +671,18 @@ private struct WorkspaceItemView: View {
         }
         .accessibilityElement(children: .contain)
     }
+
+    @ViewBuilder
+    private func itemLayout<Content: View>(
+        spacing: CGFloat,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        if isVertical {
+            VStack(spacing: spacing, content: content)
+        } else {
+            HStack(spacing: spacing, content: content)
+        }
+    }
 }
 
 @MainActor
@@ -636,6 +690,7 @@ private struct WorkspaceLabelButton: View {
     let item: WorkspaceBarItem
     let accentColor: Color?
     let textColor: Color?
+    let textOrientation: WorkspaceBarTextOrientation
     let onFocusWorkspace: () -> Void
     let onMoveFocusedWindowToWorkspace: () -> Void
 
@@ -647,12 +702,19 @@ private struct WorkspaceLabelButton: View {
         textColor ?? (item.isFocused ? resolvedAccentColor : .secondary)
     }
 
+    private var labelText: String {
+        guard textOrientation == .vertical else { return item.name }
+        return item.name.map(String.init).joined(separator: "\n")
+    }
+
     var body: some View {
         Button(action: onFocusWorkspace) {
-            Text(item.name)
+            Text(labelText)
                 .font(.system(.caption, design: .monospaced).weight(.medium))
                 .foregroundStyle(resolvedLabelColor)
                 .frame(minWidth: 16)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: textOrientation == .vertical)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

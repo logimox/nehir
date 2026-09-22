@@ -152,6 +152,7 @@ struct CanonicalTOMLConfig: Codable, Equatable {
         var showScrollLockButton: Bool
         var windowLevel: String
         var position: String
+        var textOrientation: String
         var notchAware: Bool
         var deduplicateAppIcons: Bool
         var hideEmptyWorkspaces: Bool
@@ -168,6 +169,7 @@ struct CanonicalTOMLConfig: Codable, Equatable {
 
         enum CodingKeys: String, CodingKey, CaseIterable {
             case enabled, showLabels, showFloatingWindows, showTraceButton, showScrollLockButton, windowLevel, position,
+                 textOrientation,
                  notchAware,
                  deduplicateAppIcons, hideEmptyWorkspaces, showWorkspacesFromOtherDisplays, reserveLayoutSpace, height,
                  backgroundOpacity, xOffset,
@@ -325,6 +327,7 @@ extension CanonicalTOMLConfig {
             showScrollLockButton: export.workspaceBarShowScrollLockButton,
             windowLevel: export.workspaceBarWindowLevel,
             position: export.workspaceBarPosition,
+            textOrientation: export.workspaceBarTextOrientation,
             notchAware: export.workspaceBarNotchAware,
             deduplicateAppIcons: export.workspaceBarDeduplicateAppIcons,
             hideEmptyWorkspaces: export.workspaceBarHideEmptyWorkspaces,
@@ -420,6 +423,7 @@ extension CanonicalTOMLConfig {
             workspaceBarShowScrollLockButton: workspaceBar.showScrollLockButton,
             workspaceBarWindowLevel: workspaceBar.windowLevel,
             workspaceBarPosition: workspaceBar.position,
+            workspaceBarTextOrientation: workspaceBar.textOrientation,
             workspaceBarNotchAware: workspaceBar.notchAware,
             workspaceBarDeduplicateAppIcons: workspaceBar.deduplicateAppIcons,
             workspaceBarHideEmptyWorkspaces: workspaceBar.hideEmptyWorkspaces,
@@ -769,6 +773,11 @@ extension CanonicalTOMLConfig.WorkspaceBar {
         )
         windowLevel = try container.decodeWithDefault(String.self, forKey: .windowLevel, default: d.windowLevel)
         position = try container.decodeWithDefault(String.self, forKey: .position, default: d.position)
+        textOrientation = try container.decodeWithDefault(
+            String.self,
+            forKey: .textOrientation,
+            default: d.textOrientation
+        )
         notchAware = try container.decodeWithDefault(Bool.self, forKey: .notchAware, default: d.notchAware)
         deduplicateAppIcons = try container.decodeWithDefault(
             Bool.self,
@@ -813,6 +822,7 @@ extension CanonicalTOMLConfig.WorkspaceBar {
         try container.encode(showScrollLockButton, forKey: "showScrollLockButton")
         try container.encode(windowLevel, forKey: "windowLevel")
         try container.encode(position, forKey: "position")
+        try container.encode(textOrientation, forKey: "textOrientation")
         try container.encode(notchAware, forKey: "notchAware")
         try container.encode(deduplicateAppIcons, forKey: "deduplicateAppIcons")
         try container.encode(hideEmptyWorkspaces, forKey: "hideEmptyWorkspaces")

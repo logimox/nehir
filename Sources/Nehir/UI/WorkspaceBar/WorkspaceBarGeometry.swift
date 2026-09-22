@@ -11,6 +11,8 @@ struct WorkspaceBarGeometry: Equatable {
     let menuBarHeight: CGFloat
     let barHeight: CGFloat
     let reservedTopInset: CGFloat
+    let reservedLeftInset: CGFloat
+    let reservedRightInset: CGFloat
 
     static func resolve(
         monitor: Monitor,
@@ -21,22 +23,44 @@ struct WorkspaceBarGeometry: Equatable {
         let resolvedMenuBarHeight = menuBarHeight ?? self.menuBarHeight(for: monitor)
         let effectivePosition = effectivePosition(for: monitor, resolved: resolved)
         let barHeight = max(0, CGFloat(resolved.height))
-        let reservedTopInset = isVisible && resolved.reserveLayoutSpace ? barHeight : 0
+        let isVertical = effectivePosition == .leftEdge || effectivePosition == .rightEdge
+        let reservedTopInset = isVisible && resolved.reserveLayoutSpace && !isVertical
+            ? barHeight
+            : 0
+        let reservedLeftInset = isVisible && resolved.reserveLayoutSpace && effectivePosition == .leftEdge
+            ? barHeight
+            : 0
+        let reservedRightInset = isVisible && resolved.reserveLayoutSpace && effectivePosition == .rightEdge
+            ? barHeight
+            : 0
 
         return WorkspaceBarGeometry(
             effectivePosition: effectivePosition,
             menuBarHeight: resolvedMenuBarHeight,
             barHeight: barHeight,
-            reservedTopInset: reservedTopInset
+            reservedTopInset: reservedTopInset,
+            reservedLeftInset: reservedLeftInset,
+            reservedRightInset: reservedRightInset
         )
     }
 
     func frame(
-        fittingWidth: CGFloat,
+        fittingSize: CGSize,
         monitor: Monitor,
         resolved: ResolvedBarSettings
     ) -> CGRect {
-        let width = max(fittingWidth, 300)
+        if effectivePosition == .leftEdge || effectivePosition == .rightEdge {
+            let width = max(barHeight, fittingSize.width)
+            var x = effectivePosition == .leftEdge
+                ? monitor.visibleFrame.minX
+                : monitor.visibleFrame.maxX - width
+            var y = monitor.frame.midY - fittingSize.height / 2
+            x += CGFloat(resolved.xOffset)
+            y += CGFloat(resolved.yOffset)
+            return CGRect(x: x, y: y, width: width, height: fittingSize.height)
+        }
+
+        let width = max(fittingSize.width, 300)
         var x = monitor.frame.midX - width / 2
         // Anchor "below menu bar" to the physical top edge minus an explicit,
         // always-≥24 menu-bar reservation. `visibleFrame` no longer carries the

@@ -43,6 +43,8 @@ enum WorkspaceBarWindowLevel: String, CaseIterable, Identifiable {
 enum WorkspaceBarPosition: String, CaseIterable, Identifiable {
     case overlappingMenuBar
     case belowMenuBar
+    case leftEdge
+    case rightEdge
 
     var id: String {
         rawValue
@@ -52,6 +54,22 @@ enum WorkspaceBarPosition: String, CaseIterable, Identifiable {
         switch self {
         case .overlappingMenuBar: "Overlapping Menu Bar"
         case .belowMenuBar: "Below Menu Bar"
+        case .leftEdge: "Left Edge"
+        case .rightEdge: "Right Edge"
+        }
+    }
+}
+
+enum WorkspaceBarTextOrientation: String, CaseIterable, Identifiable {
+    case horizontal
+    case vertical
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .horizontal: "Horizontal"
+        case .vertical: "Vertical"
         }
     }
 }
@@ -408,6 +426,8 @@ final class WorkspaceBarManager {
             showLabels: current.showLabels,
             backgroundOpacity: current.backgroundOpacity,
             barHeight: current.barHeight,
+            position: current.position,
+            textOrientation: current.textOrientation,
             hasDisplayDiagnosticsWarning: current.hasDisplayDiagnosticsWarning,
             showScrollLockButton: resolved.showScrollLockButton,
             accentColor: resolved.accentColor,
@@ -447,9 +467,9 @@ final class WorkspaceBarManager {
         snapshot: WorkspaceBarSnapshot,
         instance: MonitorBarInstance
     ) {
-        let fittingWidth = measuredWidth(for: snapshot, using: instance.measurementView)
+        let fittingSize = measuredSize(for: snapshot, using: instance.measurementView)
         let geometry = WorkspaceBarGeometry.resolve(monitor: monitor, resolved: resolved, isVisible: true)
-        let frame = geometry.frame(fittingWidth: fittingWidth, monitor: monitor, resolved: resolved)
+        let frame = geometry.frame(fittingSize: fittingSize, monitor: monitor, resolved: resolved)
 
         guard instance.lastAppliedFrame != frame else { return }
 
@@ -465,13 +485,13 @@ final class WorkspaceBarManager {
         instance.lastAppliedFrame = frame
     }
 
-    private func measuredWidth(
+    private func measuredSize(
         for snapshot: WorkspaceBarSnapshot,
         using measurementView: NSHostingView<WorkspaceBarMeasurementView>
-    ) -> CGFloat {
+    ) -> CGSize {
         measurementView.rootView = WorkspaceBarMeasurementView(snapshot: snapshot)
         measurementView.layoutSubtreeIfNeeded()
-        return measurementView.fittingSize.width
+        return measurementView.fittingSize
     }
 
     private func makeSnapshot(
@@ -497,6 +517,8 @@ final class WorkspaceBarManager {
             showLabels: resolved.showLabels,
             backgroundOpacity: resolved.backgroundOpacity,
             barHeight: geometry.barHeight,
+            position: geometry.effectivePosition,
+            textOrientation: settings?.workspaceBarTextOrientation ?? .horizontal,
             hasDisplayDiagnosticsWarning: DisplayEnvironmentDiagnostics.evaluate(monitors: monitorProvider())
                 .hasBadgeWarnings,
             showScrollLockButton: resolved.showScrollLockButton,
@@ -564,7 +586,11 @@ final class WorkspaceBarManager {
             isVisible: true,
             menuBarHeight: CGFloat(menuBarHeight)
         )
-        return geometry.frame(fittingWidth: fittingWidth, monitor: monitor, resolved: resolved)
+        return geometry.frame(
+            fittingSize: CGSize(width: fittingWidth, height: geometry.barHeight),
+            monitor: monitor,
+            resolved: resolved
+        )
     }
 
     nonisolated static func reservedTopInset(
