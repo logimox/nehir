@@ -13,7 +13,7 @@ A scrolling tiling window manager for macOS, built on the Niri column layout par
 - **Niri scrolling column layout** — windows arranged in columns that scroll horizontally, with automatic overflow tabbing when stacked windows cannot fit at their minimum heights
 - **Workspace management** — multiple workspaces with hotkey switching
 - **Window borders** — configurable colored borders on the focused window
-- **Workspace bar** — per-monitor workspace and app switcher, positionable at the top or either side of each display; side bars can stack labels and app icons vertically
+- **Workspace bar** — per-monitor workspace and app switcher, positionable at the top or either side of each display; side bars can stack labels and app icons vertically. Floating windows have their own vertical icon stack, with a selectable marker below the icons or a compact per-icon border. The floating-window border has an independent color picker in Settings → Workspace Bar → Appearance.
 - **Focus follows mouse** — optional hover focus
 - **Multi-monitor support** — seamless window management across displays. For the best Niri scrolling experience, use an auto-hide Dock and arrange displays vertically in macOS System Settings to avoid parked offscreen windows bleeding onto neighboring monitors.
 - **Overview mode** — bird's-eye view of all windows

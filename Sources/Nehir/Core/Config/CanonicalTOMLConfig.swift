@@ -154,6 +154,7 @@ struct CanonicalTOMLConfig: Codable, Equatable {
         var position: String
         var textOrientation: String
         var floatingWindowsIndicatorStyle: String
+        var floatingWindowsBorderColor: Color?
         var notchAware: Bool
         var deduplicateAppIcons: Bool
         var hideEmptyWorkspaces: Bool
@@ -172,6 +173,7 @@ struct CanonicalTOMLConfig: Codable, Equatable {
             case enabled, showLabels, showFloatingWindows, showTraceButton, showScrollLockButton, windowLevel, position,
                  textOrientation,
                  floatingWindowsIndicatorStyle,
+                 floatingWindowsBorderColor,
                  notchAware,
                  deduplicateAppIcons, hideEmptyWorkspaces, showWorkspacesFromOtherDisplays, reserveLayoutSpace, height,
                  backgroundOpacity, xOffset,
@@ -331,6 +333,11 @@ extension CanonicalTOMLConfig {
             position: export.workspaceBarPosition,
             textOrientation: export.workspaceBarTextOrientation,
             floatingWindowsIndicatorStyle: export.workspaceBarFloatingWindowsIndicatorStyle,
+            floatingWindowsBorderColor: export.workspaceBarFloatingWindowsBorderColor.map { color in
+                var encoded = WorkspaceBar.Color(color)
+                encoded.unknownFields = unknown["workspaceBar.floatingWindowsBorderColor"] ?? [:]
+                return encoded
+            },
             notchAware: export.workspaceBarNotchAware,
             deduplicateAppIcons: export.workspaceBarDeduplicateAppIcons,
             hideEmptyWorkspaces: export.workspaceBarHideEmptyWorkspaces,
@@ -387,6 +394,9 @@ extension CanonicalTOMLConfig {
         add("workspaceBar", workspaceBar.unknownFields)
         if let accentColor = workspaceBar.accentColor { add("workspaceBar.accentColor", accentColor.unknownFields) }
         if let textColor = workspaceBar.textColor { add("workspaceBar.textColor", textColor.unknownFields) }
+        if let borderColor = workspaceBar.floatingWindowsBorderColor {
+            add("workspaceBar.floatingWindowsBorderColor", borderColor.unknownFields)
+        }
         add("gestures", gestures.unknownFields)
         add("statusBar", statusBar.unknownFields)
         add("appearance", appearance.unknownFields)
@@ -428,6 +438,7 @@ extension CanonicalTOMLConfig {
             workspaceBarPosition: workspaceBar.position,
             workspaceBarTextOrientation: workspaceBar.textOrientation,
             workspaceBarFloatingWindowsIndicatorStyle: workspaceBar.floatingWindowsIndicatorStyle,
+            workspaceBarFloatingWindowsBorderColor: workspaceBar.floatingWindowsBorderColor?.settingsColor,
             workspaceBarNotchAware: workspaceBar.notchAware,
             workspaceBarDeduplicateAppIcons: workspaceBar.deduplicateAppIcons,
             workspaceBarHideEmptyWorkspaces: workspaceBar.hideEmptyWorkspaces,
@@ -787,6 +798,7 @@ extension CanonicalTOMLConfig.WorkspaceBar {
             forKey: .floatingWindowsIndicatorStyle,
             default: d.floatingWindowsIndicatorStyle
         )
+        floatingWindowsBorderColor = try container.decodeIfPresent(Color.self, forKey: .floatingWindowsBorderColor)
         notchAware = try container.decodeWithDefault(Bool.self, forKey: .notchAware, default: d.notchAware)
         deduplicateAppIcons = try container.decodeWithDefault(
             Bool.self,
@@ -833,6 +845,7 @@ extension CanonicalTOMLConfig.WorkspaceBar {
         try container.encode(position, forKey: "position")
         try container.encode(textOrientation, forKey: "textOrientation")
         try container.encode(floatingWindowsIndicatorStyle, forKey: "floatingWindowsIndicatorStyle")
+        try container.encodeIfPresent(floatingWindowsBorderColor, forKey: "floatingWindowsBorderColor")
         try container.encode(notchAware, forKey: "notchAware")
         try container.encode(deduplicateAppIcons, forKey: "deduplicateAppIcons")
         try container.encode(hideEmptyWorkspaces, forKey: "hideEmptyWorkspaces")

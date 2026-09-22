@@ -208,6 +208,10 @@ final class SettingsStore {
         didSet { scheduleSave() }
     }
 
+    var workspaceBarFloatingWindowsBorderColor = SettingsStore.defaultExport.workspaceBarFloatingWindowsBorderColor {
+        didSet { scheduleSave() }
+    }
+
     var workspaceBarNotchAware = SettingsStore.defaultExport.workspaceBarNotchAware {
         didSet { scheduleSave() }
     }
@@ -505,6 +509,7 @@ final class SettingsStore {
             workspaceBarPosition: workspaceBarPosition.rawValue,
             workspaceBarTextOrientation: workspaceBarTextOrientation.rawValue,
             workspaceBarFloatingWindowsIndicatorStyle: workspaceBarFloatingWindowsIndicatorStyle.rawValue,
+            workspaceBarFloatingWindowsBorderColor: workspaceBarFloatingWindowsBorderColor,
             workspaceBarNotchAware: workspaceBarNotchAware,
             workspaceBarDeduplicateAppIcons: workspaceBarDeduplicateAppIcons,
             workspaceBarHideEmptyWorkspaces: workspaceBarHideEmptyWorkspaces,
@@ -604,6 +609,7 @@ final class SettingsStore {
         workspaceBarFloatingWindowsIndicatorStyle = FloatingWindowsIndicatorStyle(
             rawValue: export.workspaceBarFloatingWindowsIndicatorStyle
         ) ?? .icon
+        workspaceBarFloatingWindowsBorderColor = export.workspaceBarFloatingWindowsBorderColor
         workspaceBarNotchAware = export.workspaceBarNotchAware
         workspaceBarDeduplicateAppIcons = export.workspaceBarDeduplicateAppIcons
         workspaceBarHideEmptyWorkspaces = export.workspaceBarHideEmptyWorkspaces

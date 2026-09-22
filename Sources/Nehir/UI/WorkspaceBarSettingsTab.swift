@@ -514,6 +514,15 @@ private struct GlobalBarSettingsSection: View {
                 .onChange(of: settings.workspaceBarFloatingWindowsIndicatorStyle) { _, _ in
                     controller.updateWorkspaceBarSettings()
                 }
+                Toggle("Custom Floating Window Border Color", isOn: customFloatingWindowBorderColorBinding)
+
+                if settings.workspaceBarFloatingWindowsBorderColor != nil {
+                    ColorPicker(
+                        "Floating Window Border Color",
+                        selection: floatingWindowBorderColorBinding,
+                        supportsOpacity: false
+                    )
+                }
 
                 SettingsSliderRow(
                     label: "Bar Height",
@@ -573,6 +582,18 @@ private struct GlobalBarSettingsSection: View {
         )
     }
 
+    private var customFloatingWindowBorderColorBinding: Binding<Bool> {
+        Binding(
+            get: { settings.workspaceBarFloatingWindowsBorderColor != nil },
+            set: { enabled in
+                settings.workspaceBarFloatingWindowsBorderColor = enabled
+                    ? settings.workspaceBarFloatingWindowsBorderColor ?? defaultAccentColor
+                    : nil
+                debouncedAppearanceSync()
+            }
+        )
+    }
+
     private var accentColorBinding: Binding<Color> {
         Binding(
             get: { (settings.workspaceBarAccentColor ?? defaultAccentColor).swiftUIColor },
@@ -592,6 +613,18 @@ private struct GlobalBarSettingsSection: View {
                 if let color = SettingsColor(color: newColor, preservesAlpha: false) {
                     settings.workspaceBarTextColor = color
                     debouncedAppearanceSync()
+                }
+            }
+        )
+    }
+
+    private var floatingWindowBorderColorBinding: Binding<Color> {
+        Binding(
+            get: { (settings.workspaceBarFloatingWindowsBorderColor ?? defaultAccentColor).swiftUIColor },
+            set: { newColor in
+                if let color = SettingsColor(color: newColor, preservesAlpha: false) {
+                    settings.workspaceBarFloatingWindowsBorderColor = color
+                    controller.updateWorkspaceBarSettings()
                 }
             }
         )

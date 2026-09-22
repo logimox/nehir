@@ -127,6 +127,7 @@ struct WorkspaceBarSnapshot: Equatable {
     let position: WorkspaceBarPosition
     let textOrientation: WorkspaceBarTextOrientation
     let floatingWindowsIndicatorStyle: FloatingWindowsIndicatorStyle
+    let floatingWindowsBorderColor: SettingsColor?
     let hasDisplayDiagnosticsWarning: Bool
     let showScrollLockButton: Bool
     let accentColor: SettingsColor?
@@ -349,6 +350,10 @@ private struct WorkspaceBarContentView: View {
         snapshot.textColor?.swiftUIColor
     }
 
+    private var floatingWindowsBorderColor: Color? {
+        snapshot.floatingWindowsBorderColor?.swiftUIColor
+    }
+
     private var barShape: RoundedRectangle {
         RoundedRectangle(cornerRadius: 8, style: .continuous)
     }
@@ -399,6 +404,7 @@ private struct WorkspaceBarContentView: View {
                     accentColor: accentColor,
                     textColor: textColor,
                     floatingWindowsIndicatorStyle: snapshot.floatingWindowsIndicatorStyle,
+                    floatingWindowsBorderColor: floatingWindowsBorderColor,
                     onFocusWorkspace: { onFocusWorkspace(item) },
                     onMoveFocusedWindowToWorkspace: { onMoveFocusedWindowToWorkspace(item) },
                     onFocusWindow: onFocusWindow,
@@ -486,8 +492,8 @@ private struct WorkspaceBarContentView: View {
         }
         .padding(isVertical ? .vertical : .horizontal, 4)
         .frame(
-            width: isVertical ? itemHeight + 4 : nil,
-            height: isVertical ? nil : itemHeight + 4
+            minWidth: isVertical ? itemHeight + 4 : nil,
+            minHeight: isVertical ? nil : itemHeight + 4
         )
         .background {
             if accessibilityReduceTransparency {
@@ -534,6 +540,7 @@ private struct WorkspaceItemView: View {
     let accentColor: Color?
     let textColor: Color?
     let floatingWindowsIndicatorStyle: FloatingWindowsIndicatorStyle
+    let floatingWindowsBorderColor: Color?
     let onFocusWorkspace: () -> Void
     let onMoveFocusedWindowToWorkspace: () -> Void
     let onFocusWindow: (WindowToken) -> Void
@@ -629,6 +636,7 @@ private struct WorkspaceItemView: View {
                     accentColor: accentColor,
                     textColor: textColor,
                     indicatorStyle: floatingWindowsIndicatorStyle,
+                    borderColor: floatingWindowsBorderColor,
                     onFocusWindow: onFocusWindow,
                     actions: scopedWindowActions
                 )
@@ -637,8 +645,8 @@ private struct WorkspaceItemView: View {
         .padding(isVertical ? .vertical : .horizontal, 8)
         .padding(isVertical ? .horizontal : .vertical, 2)
         .frame(
-            width: isVertical ? itemHeight : nil,
-            height: isVertical ? nil : itemHeight
+            minWidth: isVertical ? itemHeight : nil,
+            minHeight: isVertical ? nil : itemHeight
         )
         .background {
             if item.isFocused || isHovered {
@@ -880,6 +888,7 @@ private struct FloatingWindowsGroupView: View {
     let accentColor: Color?
     let textColor: Color?
     let indicatorStyle: FloatingWindowsIndicatorStyle
+    let borderColor: Color?
     let onFocusWindow: (WindowToken) -> Void
     let actions: WorkspaceBarWindowActions
 
@@ -889,10 +898,8 @@ private struct FloatingWindowsGroupView: View {
 
     var body: some View {
         VStack(spacing: 3) {
-            HStack(spacing: 3) {
-                ForEach(windows, id: \.id) { window in
-                    floatingWindowIcon(window)
-                }
+            ForEach(windows, id: \.id) { window in
+                floatingWindowIcon(window)
             }
             if indicatorStyle == .icon {
                 Image(systemName: "rectangle.on.rectangle")
@@ -901,16 +908,7 @@ private struct FloatingWindowsGroupView: View {
                     .accessibilityHidden(true)
             }
         }
-        .padding(.horizontal, 5)
-        .frame(height: max(16, itemHeight - 2))
-        .background {
-            Capsule(style: .continuous)
-                .fill(.thinMaterial)
-                .overlay {
-                    Capsule(style: .continuous)
-                        .strokeBorder(Color.secondary.opacity(0.24), lineWidth: 0.75)
-                }
-        }
+        .fixedSize()
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Floating windows")
     }
@@ -933,7 +931,7 @@ private struct FloatingWindowsGroupView: View {
         .overlay {
             if indicatorStyle == .border {
                 RoundedRectangle(cornerRadius: 3)
-                    .strokeBorder(accentColor ?? .accentColor, lineWidth: 1)
+                    .strokeBorder(borderColor ?? .accentColor, lineWidth: 1)
                     .padding(2)
             }
         }

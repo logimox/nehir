@@ -443,6 +443,7 @@ final class WorkspaceBarManager {
             position: current.position,
             textOrientation: current.textOrientation,
             floatingWindowsIndicatorStyle: current.floatingWindowsIndicatorStyle,
+            floatingWindowsBorderColor: current.floatingWindowsBorderColor,
             hasDisplayDiagnosticsWarning: current.hasDisplayDiagnosticsWarning,
             showScrollLockButton: resolved.showScrollLockButton,
             accentColor: resolved.accentColor,
@@ -535,6 +536,7 @@ final class WorkspaceBarManager {
             position: geometry.effectivePosition,
             textOrientation: settings?.workspaceBarTextOrientation ?? .horizontal,
             floatingWindowsIndicatorStyle: settings?.workspaceBarFloatingWindowsIndicatorStyle ?? .icon,
+            floatingWindowsBorderColor: settings?.workspaceBarFloatingWindowsBorderColor,
             hasDisplayDiagnosticsWarning: DisplayEnvironmentDiagnostics.evaluate(monitors: monitorProvider())
                 .hasBadgeWarnings,
             showScrollLockButton: resolved.showScrollLockButton,
