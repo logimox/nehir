@@ -119,6 +119,7 @@ extension CanonicalTOMLConfig {
         addTable(.workspaceBar, WorkspaceBar.CodingKeys.self)
         addNested("workspaceBar.accentColor", WorkspaceBar.Color.CodingKeys.self)
         addNested("workspaceBar.textColor", WorkspaceBar.Color.CodingKeys.self)
+        addNested("workspaceBar.floatingWindowsBorderColor", WorkspaceBar.Color.CodingKeys.self)
         addTable(.gestures, Gestures.CodingKeys.self)
         addTable(.statusBar, StatusBar.CodingKeys.self)
         addTable(.appearance, Appearance.CodingKeys.self)
