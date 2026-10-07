@@ -66,6 +66,11 @@ struct SettingsExport: Equatable, Sendable {
     var workspaceBarReserveLayoutSpace: Bool
     var workspaceBarHeight: Double
     var workspaceBarBackgroundOpacity: Double
+    var workspaceBarTheme: String
+    var workspaceBarBackgroundEffect: String
+    var workspaceBarBackgroundEffectAnimated: Bool
+    var workspaceBarBackgroundEffectIntensity: Double
+    var workspaceBarBackgroundEffectSpeed: Double
     var workspaceBarXOffset: Double
     var workspaceBarYOffset: Double
     var workspaceBarAccentColor: SettingsColor?
@@ -175,6 +180,11 @@ extension SettingsExport {
             workspaceBarReserveLayoutSpace: false,
             workspaceBarHeight: 24.0,
             workspaceBarBackgroundOpacity: 0.1,
+            workspaceBarTheme: WorkspaceBarTheme.system.rawValue,
+            workspaceBarBackgroundEffect: WorkspaceBarBackgroundEffect.none.rawValue,
+            workspaceBarBackgroundEffectAnimated: true,
+            workspaceBarBackgroundEffectIntensity: 1,
+            workspaceBarBackgroundEffectSpeed: 1,
             workspaceBarXOffset: 0.0,
             workspaceBarYOffset: 0.0,
             workspaceBarAccentColor: nil,

@@ -123,6 +123,11 @@ struct WorkspaceBarSnapshot: Equatable {
     let projection: WorkspaceBarProjection
     let showLabels: Bool
     let backgroundOpacity: Double
+    let theme: WorkspaceBarTheme
+    let backgroundEffect: WorkspaceBarBackgroundEffect
+    let backgroundEffectAnimated: Bool
+    let backgroundEffectIntensity: Double
+    let backgroundEffectSpeed: Double
     let barHeight: CGFloat
     let position: WorkspaceBarPosition
     let textOrientation: WorkspaceBarTextOrientation
@@ -337,17 +342,22 @@ private struct WorkspaceBarContentView: View {
     }
 
     private var backgroundColor: Color {
-        colorScheme == .dark
+        if let palette = snapshot.theme.palette {
+            return palette.background.swiftUIColor.opacity(
+                max(snapshot.backgroundOpacity, palette.minimumSurfaceOpacity)
+            )
+        }
+        return colorScheme == .dark
             ? Color.white.opacity(snapshot.backgroundOpacity)
             : Color.black.opacity(snapshot.backgroundOpacity * 0.5)
     }
 
     private var accentColor: Color? {
-        snapshot.accentColor?.swiftUIColor
+        snapshot.accentColor?.swiftUIColor ?? snapshot.theme.palette?.accent.swiftUIColor
     }
 
     private var textColor: Color? {
-        snapshot.textColor?.swiftUIColor
+        snapshot.textColor?.swiftUIColor ?? snapshot.theme.palette?.foreground.swiftUIColor
     }
 
     private var floatingWindowsBorderColor: Color? {
@@ -502,6 +512,15 @@ private struct WorkspaceBarContentView: View {
                 barShape
                     .fill(backgroundColor)
                     .background(.ultraThinMaterial, in: barShape)
+
+                WorkspaceBarBackgroundEffectView(
+                    effect: snapshot.backgroundEffect,
+                    accentColor: accentColor ?? .accentColor,
+                    intensity: snapshot.backgroundEffectIntensity,
+                    speed: snapshot.backgroundEffectSpeed,
+                    isAnimated: snapshot.backgroundEffectAnimated && effectiveAnimationsEnabled
+                )
+                .clipShape(barShape)
             }
 
             barShape.strokeBorder(

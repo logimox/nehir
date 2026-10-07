@@ -22,12 +22,22 @@ struct BorderConfig: Equatable {
     }
 
     @MainActor static func from(settings: SettingsStore) -> BorderConfig {
-        let color = NSColor(
-            red: CGFloat(settings.borderColorRed),
-            green: CGFloat(settings.borderColorGreen),
-            blue: CGFloat(settings.borderColorBlue),
-            alpha: CGFloat(settings.borderColorAlpha)
-        )
+        let color: NSColor
+        if let palette = settings.workspaceBarTheme.palette {
+            color = NSColor(
+                red: CGFloat(palette.accent.red),
+                green: CGFloat(palette.accent.green),
+                blue: CGFloat(palette.accent.blue),
+                alpha: 1
+            )
+        } else {
+            color = NSColor(
+                red: CGFloat(settings.borderColorRed),
+                green: CGFloat(settings.borderColorGreen),
+                blue: CGFloat(settings.borderColorBlue),
+                alpha: CGFloat(settings.borderColorAlpha)
+            )
+        }
         return BorderConfig(
             enabled: settings.bordersEnabled,
             width: CGFloat(settings.borderWidth),

@@ -64,7 +64,9 @@ enum WorkspaceBarTextOrientation: String, CaseIterable, Identifiable {
     case horizontal
     case vertical
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     var displayName: String {
         switch self {
@@ -78,7 +80,9 @@ enum FloatingWindowsIndicatorStyle: String, CaseIterable, Identifiable {
     case icon
     case border
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     var displayName: String {
         switch self {
@@ -439,6 +443,11 @@ final class WorkspaceBarManager {
             projection: current.projection,
             showLabels: current.showLabels,
             backgroundOpacity: current.backgroundOpacity,
+            theme: resolved.theme,
+            backgroundEffect: resolved.backgroundEffect,
+            backgroundEffectAnimated: resolved.backgroundEffectAnimated,
+            backgroundEffectIntensity: resolved.backgroundEffectIntensity,
+            backgroundEffectSpeed: resolved.backgroundEffectSpeed,
             barHeight: current.barHeight,
             position: current.position,
             textOrientation: current.textOrientation,
@@ -532,6 +541,11 @@ final class WorkspaceBarManager {
             projection: projection,
             showLabels: resolved.showLabels,
             backgroundOpacity: resolved.backgroundOpacity,
+            theme: resolved.theme,
+            backgroundEffect: resolved.backgroundEffect,
+            backgroundEffectAnimated: resolved.backgroundEffectAnimated,
+            backgroundEffectIntensity: resolved.backgroundEffectIntensity,
+            backgroundEffectSpeed: resolved.backgroundEffectSpeed,
             barHeight: geometry.barHeight,
             position: geometry.effectivePosition,
             textOrientation: settings?.workspaceBarTextOrientation ?? .horizontal,

@@ -546,6 +546,54 @@ private struct GlobalBarSettingsSection: View {
                     controller.updateWorkspaceBarSettings()
                 }
 
+                Picker("Theme", selection: $settings.workspaceBarTheme) {
+                    ForEach(WorkspaceBarTheme.allCases) { theme in
+                        Text(theme.displayName).tag(theme)
+                    }
+                }
+                .onChange(of: settings.workspaceBarTheme) { _, _ in
+                    controller.updateWorkspaceBarSettings()
+                    controller.updateBorderConfig(BorderConfig.from(settings: settings))
+                }
+
+                Picker("Animated Background", selection: $settings.workspaceBarBackgroundEffect) {
+                    ForEach(WorkspaceBarBackgroundEffect.allCases) { effect in
+                        Text(effect.displayName).tag(effect)
+                    }
+                }
+                .onChange(of: settings.workspaceBarBackgroundEffect) { _, _ in
+                    controller.updateWorkspaceBarSettings()
+                }
+
+                if settings.workspaceBarBackgroundEffect != .none {
+                    Toggle("Animate Background", isOn: $settings.workspaceBarBackgroundEffectAnimated)
+                        .onChange(of: settings.workspaceBarBackgroundEffectAnimated) { _, _ in
+                            controller.updateWorkspaceBarSettings()
+                        }
+
+                    SettingsSliderRow(
+                        label: "Background Effect Intensity",
+                        value: $settings.workspaceBarBackgroundEffectIntensity,
+                        range: 0 ... 1,
+                        step: 0.05,
+                        formatter: { "\(Int($0 * 100))%" }
+                    )
+                    .onChange(of: settings.workspaceBarBackgroundEffectIntensity) { _, _ in
+                        controller.updateWorkspaceBarSettings()
+                    }
+
+                    SettingsSliderRow(
+                        label: "Background Effect Speed",
+                        value: $settings.workspaceBarBackgroundEffectSpeed,
+                        range: 0.1 ... 5,
+                        step: 0.1,
+                        formatter: { String(format: "%.1fx", $0) }
+                    )
+                    .onChange(of: settings.workspaceBarBackgroundEffectSpeed) { _, _ in
+                        controller.updateWorkspaceBarSettings()
+                    }
+                }
+
                 Toggle("Custom Accent Color", isOn: customAccentColorBinding)
 
                 if settings.workspaceBarAccentColor != nil {

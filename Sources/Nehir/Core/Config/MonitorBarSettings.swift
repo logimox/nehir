@@ -151,6 +151,11 @@ struct ResolvedBarSettings {
     let windowLevel: WorkspaceBarWindowLevel
     let height: Double
     let backgroundOpacity: Double
+    let theme: WorkspaceBarTheme
+    let backgroundEffect: WorkspaceBarBackgroundEffect
+    let backgroundEffectAnimated: Bool
+    let backgroundEffectIntensity: Double
+    let backgroundEffectSpeed: Double
     let xOffset: Double
     let yOffset: Double
     let accentColor: SettingsColor?
@@ -171,9 +176,63 @@ struct ResolvedBarSettings {
         windowLevel: .popup,
         height: 24.0,
         backgroundOpacity: 0.1,
+        theme: .system,
+        backgroundEffect: .none,
+        backgroundEffectAnimated: true,
+        backgroundEffectIntensity: 1,
+        backgroundEffectSpeed: 1,
         xOffset: 0.0,
         yOffset: 0.0,
         accentColor: nil,
         textColor: nil
     )
+}
+
+extension ResolvedBarSettings {
+    init(
+        enabled: Bool,
+        showLabels: Bool,
+        showFloatingWindows: Bool,
+        showTraceButton: Bool,
+        showScrollLockButton: Bool,
+        deduplicateAppIcons: Bool,
+        hideEmptyWorkspaces: Bool,
+        showWorkspacesFromOtherDisplays: Bool,
+        reserveLayoutSpace: Bool,
+        notchAware: Bool,
+        position: WorkspaceBarPosition,
+        windowLevel: WorkspaceBarWindowLevel,
+        height: Double,
+        backgroundOpacity: Double,
+        xOffset: Double,
+        yOffset: Double,
+        accentColor: SettingsColor?,
+        textColor: SettingsColor?
+    ) {
+        self.init(
+            enabled: enabled,
+            showLabels: showLabels,
+            showFloatingWindows: showFloatingWindows,
+            showTraceButton: showTraceButton,
+            showScrollLockButton: showScrollLockButton,
+            deduplicateAppIcons: deduplicateAppIcons,
+            hideEmptyWorkspaces: hideEmptyWorkspaces,
+            showWorkspacesFromOtherDisplays: showWorkspacesFromOtherDisplays,
+            reserveLayoutSpace: reserveLayoutSpace,
+            notchAware: notchAware,
+            position: position,
+            windowLevel: windowLevel,
+            height: height,
+            backgroundOpacity: backgroundOpacity,
+            theme: .system,
+            backgroundEffect: .none,
+            backgroundEffectAnimated: true,
+            backgroundEffectIntensity: 1,
+            backgroundEffectSpeed: 1,
+            xOffset: xOffset,
+            yOffset: yOffset,
+            accentColor: accentColor,
+            textColor: textColor
+        )
+    }
 }

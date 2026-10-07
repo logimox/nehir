@@ -162,6 +162,11 @@ struct CanonicalTOMLConfig: Codable, Equatable {
         var reserveLayoutSpace: Bool
         var height: Double
         var backgroundOpacity: Double
+        var theme: String
+        var backgroundEffect: String
+        var backgroundEffectAnimated: Bool
+        var backgroundEffectIntensity: Double
+        var backgroundEffectSpeed: Double
         var xOffset: Double
         var yOffset: Double
         var labelFontSize: Double
@@ -176,7 +181,8 @@ struct CanonicalTOMLConfig: Codable, Equatable {
                  floatingWindowsBorderColor,
                  notchAware,
                  deduplicateAppIcons, hideEmptyWorkspaces, showWorkspacesFromOtherDisplays, reserveLayoutSpace, height,
-                 backgroundOpacity, xOffset,
+                 backgroundOpacity, theme, backgroundEffect, backgroundEffectAnimated, backgroundEffectIntensity,
+                 backgroundEffectSpeed, xOffset,
                  yOffset, labelFontSize, accentColor, textColor
         }
 
@@ -345,6 +351,11 @@ extension CanonicalTOMLConfig {
             reserveLayoutSpace: export.workspaceBarReserveLayoutSpace,
             height: export.workspaceBarHeight,
             backgroundOpacity: export.workspaceBarBackgroundOpacity,
+            theme: export.workspaceBarTheme,
+            backgroundEffect: export.workspaceBarBackgroundEffect,
+            backgroundEffectAnimated: export.workspaceBarBackgroundEffectAnimated,
+            backgroundEffectIntensity: export.workspaceBarBackgroundEffectIntensity,
+            backgroundEffectSpeed: export.workspaceBarBackgroundEffectSpeed,
             xOffset: export.workspaceBarXOffset,
             yOffset: export.workspaceBarYOffset,
             labelFontSize: export.workspaceBarLabelFontSize,
@@ -446,6 +457,11 @@ extension CanonicalTOMLConfig {
             workspaceBarReserveLayoutSpace: workspaceBar.reserveLayoutSpace,
             workspaceBarHeight: workspaceBar.height,
             workspaceBarBackgroundOpacity: workspaceBar.backgroundOpacity,
+            workspaceBarTheme: workspaceBar.theme,
+            workspaceBarBackgroundEffect: workspaceBar.backgroundEffect,
+            workspaceBarBackgroundEffectAnimated: workspaceBar.backgroundEffectAnimated,
+            workspaceBarBackgroundEffectIntensity: workspaceBar.backgroundEffectIntensity,
+            workspaceBarBackgroundEffectSpeed: workspaceBar.backgroundEffectSpeed,
             workspaceBarXOffset: workspaceBar.xOffset,
             workspaceBarYOffset: workspaceBar.yOffset,
             workspaceBarAccentColor: workspaceBar.accentColor?.settingsColor,
@@ -826,6 +842,27 @@ extension CanonicalTOMLConfig.WorkspaceBar {
             forKey: .backgroundOpacity,
             default: d.backgroundOpacity
         )
+        theme = try container.decodeWithDefault(String.self, forKey: .theme, default: d.theme)
+        backgroundEffect = try container.decodeWithDefault(
+            String.self,
+            forKey: .backgroundEffect,
+            default: d.backgroundEffect
+        )
+        backgroundEffectAnimated = try container.decodeWithDefault(
+            Bool.self,
+            forKey: .backgroundEffectAnimated,
+            default: d.backgroundEffectAnimated
+        )
+        backgroundEffectIntensity = try container.decodeWithDefault(
+            Double.self,
+            forKey: .backgroundEffectIntensity,
+            default: d.backgroundEffectIntensity
+        )
+        backgroundEffectSpeed = try container.decodeWithDefault(
+            Double.self,
+            forKey: .backgroundEffectSpeed,
+            default: d.backgroundEffectSpeed
+        )
         xOffset = try container.decodeWithDefault(Double.self, forKey: .xOffset, default: d.xOffset)
         yOffset = try container.decodeWithDefault(Double.self, forKey: .yOffset, default: d.yOffset)
         labelFontSize = try container.decodeWithDefault(Double.self, forKey: .labelFontSize, default: d.labelFontSize)
@@ -853,6 +890,11 @@ extension CanonicalTOMLConfig.WorkspaceBar {
         try container.encode(reserveLayoutSpace, forKey: "reserveLayoutSpace")
         try container.encode(height, forKey: "height")
         try container.encode(backgroundOpacity, forKey: "backgroundOpacity")
+        try container.encode(theme, forKey: "theme")
+        try container.encode(backgroundEffect, forKey: "backgroundEffect")
+        try container.encode(backgroundEffectAnimated, forKey: "backgroundEffectAnimated")
+        try container.encode(backgroundEffectIntensity, forKey: "backgroundEffectIntensity")
+        try container.encode(backgroundEffectSpeed, forKey: "backgroundEffectSpeed")
         try container.encode(xOffset, forKey: "xOffset")
         try container.encode(yOffset, forKey: "yOffset")
         try container.encode(labelFontSize, forKey: "labelFontSize")

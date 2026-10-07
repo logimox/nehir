@@ -242,6 +242,28 @@ final class SettingsStore {
         didSet { scheduleSave() }
     }
 
+    var workspaceBarTheme = WorkspaceBarTheme(rawValue: SettingsStore.defaultExport.workspaceBarTheme) ?? .system {
+        didSet { scheduleSave() }
+    }
+
+    var workspaceBarBackgroundEffect = WorkspaceBarBackgroundEffect(
+        rawValue: SettingsStore.defaultExport.workspaceBarBackgroundEffect
+    ) ?? .none {
+        didSet { scheduleSave() }
+    }
+
+    var workspaceBarBackgroundEffectAnimated = SettingsStore.defaultExport.workspaceBarBackgroundEffectAnimated {
+        didSet { scheduleSave() }
+    }
+
+    var workspaceBarBackgroundEffectIntensity = SettingsStore.defaultExport.workspaceBarBackgroundEffectIntensity {
+        didSet { scheduleSave() }
+    }
+
+    var workspaceBarBackgroundEffectSpeed = SettingsStore.defaultExport.workspaceBarBackgroundEffectSpeed {
+        didSet { scheduleSave() }
+    }
+
     var workspaceBarXOffset = SettingsStore.defaultExport.workspaceBarXOffset {
         didSet { scheduleSave() }
     }
@@ -517,6 +539,11 @@ final class SettingsStore {
             workspaceBarReserveLayoutSpace: workspaceBarReserveLayoutSpace,
             workspaceBarHeight: workspaceBarHeight,
             workspaceBarBackgroundOpacity: workspaceBarBackgroundOpacity,
+            workspaceBarTheme: workspaceBarTheme.rawValue,
+            workspaceBarBackgroundEffect: workspaceBarBackgroundEffect.rawValue,
+            workspaceBarBackgroundEffectAnimated: workspaceBarBackgroundEffectAnimated,
+            workspaceBarBackgroundEffectIntensity: workspaceBarBackgroundEffectIntensity,
+            workspaceBarBackgroundEffectSpeed: workspaceBarBackgroundEffectSpeed,
             workspaceBarXOffset: workspaceBarXOffset,
             workspaceBarYOffset: workspaceBarYOffset,
             workspaceBarAccentColor: workspaceBarAccentColor,
@@ -605,7 +632,9 @@ final class SettingsStore {
         workspaceBarShowScrollLockButton = export.workspaceBarShowScrollLockButton
         workspaceBarWindowLevel = WorkspaceBarWindowLevel(rawValue: export.workspaceBarWindowLevel) ?? .popup
         workspaceBarPosition = WorkspaceBarPosition(rawValue: export.workspaceBarPosition) ?? .overlappingMenuBar
-        workspaceBarTextOrientation = WorkspaceBarTextOrientation(rawValue: export.workspaceBarTextOrientation) ?? .horizontal
+        workspaceBarTextOrientation = WorkspaceBarTextOrientation(
+            rawValue: export.workspaceBarTextOrientation
+        ) ?? .horizontal
         workspaceBarFloatingWindowsIndicatorStyle = FloatingWindowsIndicatorStyle(
             rawValue: export.workspaceBarFloatingWindowsIndicatorStyle
         ) ?? .icon
@@ -617,6 +646,13 @@ final class SettingsStore {
         workspaceBarReserveLayoutSpace = export.workspaceBarReserveLayoutSpace
         workspaceBarHeight = export.workspaceBarHeight
         workspaceBarBackgroundOpacity = export.workspaceBarBackgroundOpacity
+        workspaceBarTheme = WorkspaceBarTheme(rawValue: export.workspaceBarTheme) ?? .system
+        workspaceBarBackgroundEffect = WorkspaceBarBackgroundEffect(
+            rawValue: export.workspaceBarBackgroundEffect
+        ) ?? .none
+        workspaceBarBackgroundEffectAnimated = export.workspaceBarBackgroundEffectAnimated
+        workspaceBarBackgroundEffectIntensity = export.workspaceBarBackgroundEffectIntensity
+        workspaceBarBackgroundEffectSpeed = export.workspaceBarBackgroundEffectSpeed
         workspaceBarXOffset = export.workspaceBarXOffset
         workspaceBarYOffset = export.workspaceBarYOffset
         workspaceBarAccentColor = export.workspaceBarAccentColor
@@ -880,6 +916,11 @@ final class SettingsStore {
             windowLevel: override?.windowLevel ?? workspaceBarWindowLevel,
             height: override?.height ?? workspaceBarHeight,
             backgroundOpacity: override?.backgroundOpacity ?? workspaceBarBackgroundOpacity,
+            theme: workspaceBarTheme,
+            backgroundEffect: workspaceBarBackgroundEffect,
+            backgroundEffectAnimated: workspaceBarBackgroundEffectAnimated,
+            backgroundEffectIntensity: workspaceBarBackgroundEffectIntensity.clamped(to: 0 ... 1),
+            backgroundEffectSpeed: workspaceBarBackgroundEffectSpeed.clamped(to: 0.1 ... 5),
             xOffset: override?.xOffset ?? workspaceBarXOffset,
             yOffset: override?.yOffset ?? workspaceBarYOffset,
             accentColor: workspaceBarAccentColor,
