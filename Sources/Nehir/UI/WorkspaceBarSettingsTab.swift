@@ -554,6 +554,7 @@ private struct GlobalBarSettingsSection: View {
                 .onChange(of: settings.workspaceBarTheme) { _, _ in
                     controller.updateWorkspaceBarSettings()
                     controller.updateBorderConfig(BorderConfig.from(settings: settings))
+                    controller.setBordersEnabled(settings.bordersEnabled)
                 }
 
                 Picker("Animated Background", selection: $settings.workspaceBarBackgroundEffect) {
