@@ -357,7 +357,7 @@ private struct WorkspaceBarContentView: View {
     }
 
     private var textColor: Color? {
-        snapshot.textColor?.swiftUIColor ?? snapshot.theme.palette?.foreground.swiftUIColor
+        snapshot.theme.palette?.foreground.swiftUIColor ?? snapshot.textColor?.swiftUIColor
     }
 
     private var floatingWindowsBorderColor: Color? {

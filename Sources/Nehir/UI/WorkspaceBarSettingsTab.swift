@@ -575,7 +575,7 @@ private struct GlobalBarSettingsSection: View {
                     SettingsSliderRow(
                         label: "Background Effect Intensity",
                         value: $settings.workspaceBarBackgroundEffectIntensity,
-                        range: 0 ... 1,
+                        range: 0 ... 3,
                         step: 0.05,
                         formatter: { "\(Int($0 * 100))%" }
                     )

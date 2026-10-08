@@ -919,7 +919,7 @@ final class SettingsStore {
             theme: workspaceBarTheme,
             backgroundEffect: workspaceBarBackgroundEffect,
             backgroundEffectAnimated: workspaceBarBackgroundEffectAnimated,
-            backgroundEffectIntensity: workspaceBarBackgroundEffectIntensity.clamped(to: 0 ... 1),
+            backgroundEffectIntensity: workspaceBarBackgroundEffectIntensity.clamped(to: 0 ... 3),
             backgroundEffectSpeed: workspaceBarBackgroundEffectSpeed.clamped(to: 0.1 ... 5),
             xOffset: override?.xOffset ?? workspaceBarXOffset,
             yOffset: override?.yOffset ?? workspaceBarYOffset,

@@ -17,7 +17,7 @@ struct WorkspaceBarBackgroundEffectView: View {
         TimelineView(.animation(minimumInterval: 1.0 / 20.0, paused: !isAnimated || effect == .none)) { timeline in
             Canvas { context, size in
                 let phase = timeline.date.timeIntervalSinceReferenceDate * speed
-                let alpha = intensity.clamped(to: 0 ... 1)
+                let alpha = intensity.clamped(to: 0 ... 3)
 
                 switch effect {
                 case .none:
